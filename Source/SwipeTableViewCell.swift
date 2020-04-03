@@ -21,7 +21,11 @@ open class SwipeTableViewCell: UITableViewCell {
     /// If false, the cell will not close when the table view is swiped
     public var closeOnSwipe: Bool = false
 
-    var state = SwipeState.center
+    var state = SwipeState.center {
+        didSet {
+            self.swipeStateChange(state: state)
+        }
+    }
     var actionsView: SwipeActionsView?
     var scrollView: UIScrollView? {
         return tableView
@@ -44,7 +48,9 @@ open class SwipeTableViewCell: UITableViewCell {
         set { super.frame = state.isActive ? CGRect(origin: CGPoint(x: frame.minX, y: newValue.minY), size: newValue.size) : newValue }
         get { return super.frame }
     }
-    
+
+    open func swipeStateChange(state:SwipeState) { }
+
     /// :nodoc:
     open override var layoutMargins: UIEdgeInsets {
         get {
