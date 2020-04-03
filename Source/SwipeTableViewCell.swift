@@ -17,7 +17,10 @@ open class SwipeTableViewCell: UITableViewCell {
     
     /// The object that acts as the delegate of the `SwipeTableViewCell`.
     public weak var delegate: SwipeTableViewCellDelegate?
-    
+
+    /// If false, the cell will not close when the table view is swiped
+    public var closeOnSwipe: Bool = false
+
     var state = SwipeState.center
     var actionsView: SwipeActionsView?
     var scrollView: UIScrollView? {
@@ -126,7 +129,9 @@ open class SwipeTableViewCell: UITableViewCell {
         if !UIAccessibility.isVoiceOverRunning {
             for cell in tableView?.swipeCells ?? [] {
                 if (cell.state == .left || cell.state == .right) && !cell.contains(point: point) {
-                    tableView?.hideSwipeCell()
+                    if closeOnSwipe {
+                        tableView?.hideSwipeCell()
+                    }
                     return false
                 }
             }
@@ -159,7 +164,7 @@ open class SwipeTableViewCell: UITableViewCell {
     }
     
     @objc func handleTablePan(gesture: UIPanGestureRecognizer) {
-        if gesture.state == .began {
+        if gesture.state == .began && closeOnSwipe {
             hideSwipe(animated: true)
         }
     }
